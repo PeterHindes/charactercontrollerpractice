@@ -1,0 +1,204 @@
+[gd_scene load_steps=27 format=3 uid="uid://dhjk26i8lpi66"]
+
+[ext_resource type="Texture2D" uid="uid://dkdl7q4b5v6m8" path="res://images/gras.png" id="1_3vfni"]
+[ext_resource type="Script" path="res://charactercontroller.gd" id="2_ip0wu"]
+[ext_resource type="Script" path="res://popupcontroler.gd" id="2_molls"]
+[ext_resource type="Script" path="res://copyCharacterRotation.gd" id="2_y8s6w"]
+[ext_resource type="Texture2D" uid="uid://bqxg6osym8j7o" path="res://images/RTS_Crate.png" id="3_27x7g"]
+[ext_resource type="Texture2D" uid="uid://bxsynffnyaujo" path="res://images/paper02albedo.png" id="4_qgp4a"]
+[ext_resource type="Texture2D" uid="uid://b6kqcms4n04xb" path="res://images/Screenshot 2023-07-06 at 11.05.53 PM.png" id="5_gqsja"]
+[ext_resource type="Texture2D" uid="uid://dyqja0h3gffsx" path="res://images/guy.png" id="7_16q3k"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r03bh"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_18jvb"]
+sky_material = SubResource("ProceduralSkyMaterial_r03bh")
+
+[sub_resource type="Environment" id="Environment_8k6ar"]
+background_mode = 2
+sky = SubResource("Sky_18jvb")
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8ilr5"]
+albedo_texture = ExtResource("1_3vfni")
+texture_filter = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cjjd3"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6onfm"]
+size = Vector3(0.389706, 0.176934, 0.395111)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_isjuy"]
+albedo_texture = ExtResource("3_27x7g")
+distance_fade_max_distance = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8hrel"]
+albedo_texture = ExtResource("4_qgp4a")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_yovfp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dm7af"]
+albedo_texture = ExtResource("5_gqsja")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_uacv1"]
+
+[sub_resource type="Animation" id="Animation_clxwl"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RigidBody3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-1.5708, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_kltcy"]
+resource_name = "rotateDown"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RigidBody3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(6.49802, 1),
+"update": 0,
+"values": [Vector3(-1.5708, 0, 0), Vector3(-3.14159, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lmn82"]
+_data = {
+"RESET": SubResource("Animation_clxwl"),
+"rotateDown": SubResource("Animation_kltcy")
+}
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_5qu8t"]
+height = 0.490922
+radius = 0.0928988
+
+[sub_resource type="Animation" id="Animation_mwbxm"]
+resource_name = "rotatePlayer"
+length = 4.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_nwe1n"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 6.28319, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_87pd1"]
+_data = {
+"RESET": SubResource("Animation_nwe1n"),
+"rotatePlayer": SubResource("Animation_mwbxm")
+}
+
+[node name="Node3D" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_8k6ar")
+
+[node name="Rotater" type="Node3D" parent="." node_paths=PackedStringArray("node1")]
+script = ExtResource("2_y8s6w")
+node1 = [NodePath("../RigidBody3D")]
+
+[node name="floor" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_8ilr5")
+mesh = SubResource("PlaneMesh_cjjd3")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -3.61999e-06, 1, 0, -1, -3.61999e-06, -0.481, 0.01, 0)
+gravity_scale = 0.0
+script = ExtResource("2_molls")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, -3.55271e-15, 0, 3.55271e-15, 1, 0, 0, 0.2)
+shape = SubResource("BoxShape3D_6onfm")
+
+[node name="box" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0.2)
+material_override = SubResource("StandardMaterial3D_isjuy")
+mesh = SubResource("PlaneMesh_cjjd3")
+skeleton = NodePath("../..")
+
+[node name="back face" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(-0.2, 1.74846e-08, 0, -1.74846e-08, -0.2, 0, 0, 0, 0.2, 0, -0.0243536, 0.2)
+material_override = SubResource("StandardMaterial3D_8hrel")
+mesh = SubResource("PlaneMesh_yovfp")
+
+[node name="top face" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(0.198, 0, 0, 0, -9.00455e-09, -0.012, 0, 0.206, -5.24537e-10, 0, -0.0114137, 0.400216)
+material_override = SubResource("StandardMaterial3D_dm7af")
+mesh = SubResource("PlaneMesh_uacv1")
+
+[node name="side face" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(-8.65485e-09, 0.206, -5.24537e-10, 0, -9.00455e-09, -0.012, -0.198, -9.00455e-09, 0, 0.197331, -0.011, 0.200888)
+material_override = SubResource("StandardMaterial3D_dm7af")
+mesh = SubResource("PlaneMesh_uacv1")
+
+[node name="side face2" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(-8.65485e-09, -0.206, 5.24537e-10, 0, -9.00455e-09, -0.012, 0.198, -9.00455e-09, 0, -0.198677, -0.011, 0.200888)
+material_override = SubResource("StandardMaterial3D_dm7af")
+mesh = SubResource("PlaneMesh_uacv1")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="RigidBody3D"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_lmn82")
+}
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
+script = ExtResource("2_ip0wu")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(-1, 6.68716e-08, -5.63111e-08, 0, 0.644124, 0.764921, 8.74228e-08, 0.764921, -0.644124, -0.0450758, 0.685853, -0.788012)
+fov = 83.1247
+
+[node name="Sprite3D" type="Sprite3D" parent="CharacterBody3D"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.124128, 0)
+double_sided = false
+texture_filter = 0
+texture = ExtResource("7_16q3k")
+hframes = 4
+vframes = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("CylinderShape3D_5qu8t")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CharacterBody3D"]
+libraries = {
+"": SubResource("AnimationLibrary_87pd1")
+}
